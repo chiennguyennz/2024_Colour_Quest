@@ -1,16 +1,17 @@
 from tkinter import *
 from functools import partial  # To prevent unwanted windows
 
-class ChooseRound:
 
-    def __init__(self):
+class ChooseRounds:
+
+    def __init__(self, master):
         # common format for all buttons
         # Arial size 14 bold, with white text
         button_font = ("Arial", "13", "bold")
         button_fg = "#FFFFFF"
 
-        # Set up GUI Frame
-        self.intro_frame = Frame(padx=10, pady=10)
+        self.master = master
+        self.intro_frame = Frame(master, padx=10, pady=10)
         self.intro_frame.grid()
 
         self.intro_heading_label = Label(self.intro_frame,
@@ -38,18 +39,19 @@ class ChooseRound:
 
         self.three_button = Button(self.how_many_frame,
                                    text="3 Rounds",
-                                   bg="CC0000",
+                                   bg="#CC0000",
                                    fg=button_fg,
-                                   font=button_font, width=10,
-                                   )
+                                   font=button_font,
+                                   width=10)
         self.three_button.grid(row=0, column=0, padx=5, pady=5)
 
         self.five_button = Button(self.how_many_frame,
                                   text="5 Rounds",
                                   bg="#009900",
                                   fg=button_fg,
-                                  font=button_font, width=10,
-                                  )
+                                  font=button_font,
+                                  width=10,
+                                  command=partial(self.start_game, 5))
         self.five_button.grid(row=0, column=1, padx=5, pady=5)
 
         self.ten_button = Button(self.how_many_frame,
@@ -57,6 +59,17 @@ class ChooseRound:
                                  bg="#000099",
                                  fg=button_fg,
                                  font=button_font,
-                                 width=10,
+                                 width=10
                                  )
         self.ten_button.grid(row=0, column=2, padx=5, pady=5)
+
+    def start_game(self, num_rounds):
+            print(f"Starting {num_rounds} rounds game")
+
+
+# main routine
+if __name__ == "__main__":
+    root = Tk()
+    root.title("Colour Quest")
+    ChooseRounds(root)
+    root.mainloop()

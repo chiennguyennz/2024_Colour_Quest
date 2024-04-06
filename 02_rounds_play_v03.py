@@ -1,7 +1,7 @@
 from tkinter import *
 from functools import partial  # To prevent unwanted windows
 
-class ChooseRound:
+class ChooseRounds:
 
     def __init__(self):
         # common format for all buttons
@@ -53,8 +53,8 @@ class ChooseRound:
                                        )
             self.rounds_button.grid(row=0, column=item,
                                     padx=5, pady=5)
-    def to_play(self, num_round):
-        Play(num_round)
+    def to_play(self, num_rounds):
+        Play(num_rounds)
 
         # Hide root window (ie: hide rounds choice window).
         root.withdraw()
@@ -81,9 +81,9 @@ class Play:
         self.control_frame = Label(self.quest_frame)
         self.control_frame.grid(row=6)
 
-        self.start_over_button = Label(self.control_frame,
-                                    text="Start Over",
-                                    command=self.close_play)
+        self.start_over_button = Button(self.control_frame,
+                                        text="Start Over",
+                                        command=self.close_play)
         self.start_over_button.grid(row=0, column=2)
 
     def close_play(self):
@@ -97,5 +97,5 @@ class Play:
 if __name__ == "__main__":
     root = Tk()
     root.title("Colour Quest")
-    ChooseRound()
+    ChooseRounds()
     root.mainloop()

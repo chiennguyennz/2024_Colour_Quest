@@ -2,15 +2,15 @@ from tkinter import *
 from functools import partial  # To prevent unwanted windows
 import csv
 import random
-import pandas as pd
+#import pandas as pd
 
 
 # users choose round 3, 5 or 10 rounds
 class ChooseRounds:
 
     def __init__(self):
-
-
+        # common format for all buttons
+        # Arial size 14 bold, with white text
         button_font = ("Arial", "13", "bold")
         button_fg = "#FFFFFF"
 
@@ -41,51 +41,36 @@ class ChooseRounds:
         self.how_many_frame = Frame(self.intro_frame)
         self.how_many_frame.grid(row=2)
 
-        self.three_button = Button(self.how_many_frame,
-                                   text="3 Rounds",
-                                   bg="#CC0000",
-                                   fg=button_fg,
-                                   font=button_font, width=10,
-                                   )
-        self.three_button.grid(row=0, column=0, padx=5, pady=5)
+        # list to set up rounds button. First item in each
+        # sublist is the background color, second item is
+        # the number of rounds
+        btn_color_value = [
+            ["#CC0000", 3], ["#009900", 5], ["#000099", 10]
+            ]
 
-        self.five_button = Button(self.how_many_frame,
-                                  text="5 Rounds",
-                                  bg="#009900",
-                                  fg=button_fg,
-                                  font=button_font, width=10,
-                                  )
-        self.five_button.grid(row=0, column=1, padx=5, pady=5)
-
-        self.ten_button = Button(self.how_many_frame,
-                                 text="10 Rounds",
-                                 bg="#000099",
-                                 fg=button_fg,
-                                 font=button_font,
-                                 width=10,
-                                 )
-        self.ten_button.grid(row=0, column=2, padx=5, pady=5)
-
-        # invoke play class with three rounds for testing purposes.
-        self.to_play(3)
-
+        for item in range(0, 3):
+            self.rounds_button = Button(self.how_many_frame,
+                                        fg=button_fg,
+                                        bg=btn_color_value[item][0],
+                                        text="{} Rounds".format(btn_color_value[item][1]),
+                                        font=button_font, width=10,
+                                        command=lambda i=item: self.to_play(btn_color_value[i][1])
+                                        )
+            self.rounds_button.grid(row=0, column=item,
+                                    padx=5, pady=5)
     def to_play(self, num_rounds):
         Play(num_rounds)
 
-        # Hide root windows (ie: hide rounds choice windows).
+        # Hide root window (ie: hide rounds choice window).
         root.withdraw()
 
-
 class Play:
-
     def __init__(self, how_many):
-
         self.play_box = Toplevel()
 
         # If users press cross at top, closes help and
         # 'release' help button
-        self.play_box.protocol('WM_DELETE_WINDOW',
-                               partial(self.close_play))
+        self.play_box.protocol('WM_DELETE_WINDOW', partial(self.close_play))
 
         # Variables used to work out statistics, when game end etc
         self.rounds_wanted = IntVar()
@@ -100,7 +85,6 @@ class Play:
 
         # lists to hold users score/s and computer score/s
         # used to work out statistics
-
         self.user_scores = []
         self.computer_scores = []
 
@@ -147,82 +131,88 @@ class Play:
                                     column=item % 3,
                                     padx=5, pady=5)
 
-            # display computer choice (after user has chosen a colour)
-            self.comp_choice_label = Label(self.quest_frame,
-                                           text="Computer choice will appear",
-                                           bg="#C0C0C0", width=51)
-            self.comp_choice_label.grid(row=3, pady=10)
+        # display computer choice (after user has chosen a colour)
+        self.comp_choice_label = Label(self.quest_frame,
+                                       text="Computer choice will appear",
+                                       bg="#C0C0C0", width=51)
+        self.comp_choice_label.grid(row=3, pady=10)
 
-            # frame to include round results and next button
-            self.rounds_frame = Frame(self.quest_frame)
-            self.rounds_frame.grid(row=4, pady=5)
+        # frame to include round results and next button
+        self.rounds_frame = Frame(self.quest_frame)
+        self.rounds_frame.grid(row=4, pady=5)
 
-            self.round_results_label = Label(self.rounds_frame, text="Round Result",
-                                            width=32, bg="#FFF2CC",
-                                            font=("Arial", 10),
-                                            pady=5)
-            self.round_results_label.grid(row=0, column=0, padx=5)
+        self.round_results_label = Label(self.rounds_frame, text="Round Result",
+                                         width=32, bg="#FFF2CC",
+                                         font=("Arial", 10),
+                                         pady=5)
+        self.round_results_label.grid(row=0, column=0, padx=5)
 
-            self.next_button = Button(self.rounds_frame, text="Next Round",
-                                      fg="#FFFFFF", bg="#008BFC",
-                                      font=("Arial", 11, "bold"),
-                                      width=10, state=DISABLED)
-            self.next_button.grid(row=0, column=1)
+        self.next_button = Button(self.rounds_frame, text="Next Round",
+                                  fg="#FFFFFF", bg="#008BFC",
+                                  font=("Arial", 11, "bold"),
+                                  width=10, state=DISABLED,
+                                  command=self.new_round)
+        self.next_button.grid(row=0, column=1)
 
-            # at start, get 'new round'
-            self.new_round()
+        # start first round
+        self.new_round()
 
-            # large label to show overall game results
-            self.game_result_label = Label(self.quest_frame,
-                                           text="Game Totals: User: - \t Choose Round",
-                                           bg="#FFF2CC",padx=10, pady=10,
-                                           font=("Arial", "10"), width=42)
-            self.game_result_label.grid(row=6)
+        # large label to show overall game results
+        self.game_results_label = Label(self.quest_frame,
+                                        text="Game Totals: User: - \t Choose Round",
+                                        bg="#FFF2CC", padx=10, pady=10,
+                                        font=("Arial", "10"), width=42)
+        self.game_results_label.grid(row=6)
 
-            self.control_frame = Frame(self.quest_frame)
-            self.control_frame.grid(row=6)
+        self.control_frame = Frame(self.quest_frame)
+        self.control_frame.grid(row=6)
 
-            control_buttons = [
-                ["#CC6600", "Help", "get help"],
-                ["#004C99", "Statistics", "get stats"],
-                ["#808080", "Start Over", "start over"]
-            ]
+        control_buttons = [
+            ["#CC6600", "Help", "get help"],
+            ["#004C99", "Statistics", "get stats"],
+            ["#808080", "Start Over", "start over"]
+        ]
 
-            # list to hold references for control buttons
-            # so that the text of the 'start over' button
-            # can easily be configured when the game is over
-            self.control_button_ref = []
+        # list to hold references for control buttons
+        # so that the text of the 'start over' button
+        # can easily be configured when the game is over
+        self.control_button_ref = []
 
-            for item in range(0, 3):
-                self.make_control_button = Button(self.control_frame,
-                                                  fg="#FFFFFF",
-                                                  bg=control_buttons[item][0],
-                                                  text=control_buttons[item][1],
-                                                  width=11, font=("Arial", "12", "bold"),
-                                                  command=lambda i=item: self.to_do(control_buttons[i][2]))
-                self.make_control_button.grid(row=0, column=item, padx=5, pady=5)
+        for item in range(0, 3):
+            self.make_control_button = Button(self.control_frame,
+                                              fg="#FFFFFF",
+                                              bg=control_buttons[item][0],
+                                              text=control_buttons[item][1],
+                                              width=11, font=("Arial", "12", "bold"),
+                                              command=lambda i=item: self.to_do(control_buttons[i][2]))
+            self.make_control_button.grid(row=0, column=item, padx=5, pady=5)
 
-                # Add buttons to control list
-                self.control_button_ref.append(self.make_control_button)
+            # Add buttons to control list
+            self.control_button_ref.append(self.make_control_button)
 
-            # disable help button
-            self.to_help_btn = self.control_button_ref[0]
+        # disable help button
+        self.to_help_btn = self.control_button_ref[0]
 
-        # retrieve colours from csv file
-
+    # retrieve colour from csv file
     def get_all_colours(self):
-        try:
-            df = pd.read_csv("00_colours_list_hex_v3.csv")
-            var_all_colors = df.values.tolist()[1:]  # Skip header row
-            return var_all_colors
-        except Exception as e:
-            print("Error reading CSV file:", e)
-            return []
+        file = open("00_colours_list_hex_v3.csv", "r")
+        var_all_colors = list(csv.reader(file, delimiter=","))
+        file.close()
 
-        # randomly choose six colours for buttons
+        # removes first entry list (ie: the header row).
+        var_all_colors.pop(0)
+        return var_all_colors
+
+    # randomly choose six colours for buttons
     def get_round_colors(self):
         round_colour_list = []
         color_scores = []
+
+        # Check if there are enough unique colors available
+        if len(self.all_colours) < 6:
+            # Handle the case where there are not enough colors available
+            print("Not enough unique colors available.")
+            return round_colour_list  # Return an empty list
 
         # get six unique colours
         while len(round_colour_list) < 6:
@@ -236,7 +226,7 @@ class Play:
                 round_colour_list.append(chosen_colour)
                 color_scores.append(chosen_colour[1])
 
-                # renove item from master list
+                # remove item from master list
                 self.all_colours.pop(index_chosen)
 
         return round_colour_list
@@ -244,8 +234,6 @@ class Play:
     # sets up new round when 'next' button is pressed
     def new_round(self):
 
-        # disable next button (renable it at the end
-        # of the round)
         self.next_button.config(state=DISABLED)
 
         # empty button list so we can get new colours
@@ -272,8 +260,6 @@ class Play:
                       "{}".format(current_round + 1, how_many)
         self.choose_heading.config(text=new_heading)
 
-    # work out who won and if the game is over
-    # update win / loss lables and buttons
     def to_compare(self, user_choice):
 
         how_many = self.rounds_wanted.get()
@@ -333,16 +319,16 @@ class Play:
         comp_total = sum(self.computer_scores)
 
         if user_total > comp_total:
-            self.game_result_label.config(bg=win_colour)
+            self.game_results_label.config(bg=win_colour)
             status = "You Win!"
         else:
-            self.game_result_label.config(bg=lose_colour)
+            self.game_results_label.config(bg=lose_colour)
             status = "You Lose!"
 
         game_outcome_txt = "Total Score: User {} \t" \
-                            "Computer: {}".format(user_total,
-                                                  comp_total)
-        self.game_result_label.config(text=game_outcome_txt)
+                           "Computer: {}".format(user_total,
+                                                 comp_total)
+        self.game_results_label.config(text=game_outcome_txt)
 
         # if the game is over, disable all buttons
         # and change text of 'next' button to either
@@ -351,8 +337,7 @@ class Play:
         if current_round == how_many:
             # Change 'next' button to show overall
             # win / loss result and disable it
-            self.next_button.config(state=DISABLED,
-                                    text=status)
+            self.next_button.config(state=DISABLED,text=status)
 
             # update 'start over button'
             start_over_button = self.control_button_ref[2]
@@ -364,7 +349,7 @@ class Play:
                 item['bg'] = "#C0C0C0"
 
         else:
-            # enable next round button and update heading
+            # enable next round button
             self.next_button.config(state=NORMAL)
 
     # Detects which 'control' button was pressed and
@@ -401,6 +386,11 @@ class DisplayHelp:
                                 height=200,
                                 bg=background)
         self.help_frame.grid()
+
+        self.help_heading_label = Label(self.help_frame, bg=background,
+                                        text="Help / Hints",
+                                        font=("Arial", "14", "bold"))
+        self.help_heading_label.grid(row=0)
 
         help_text = "Your goal in this game is to beat the computer " \
                     "and you have an advantage - you get to choose " \

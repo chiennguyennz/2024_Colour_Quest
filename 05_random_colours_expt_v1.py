@@ -1,6 +1,6 @@
 import random
 
-some_colours = [
+some_colors = [
     ['alice blue', '19', 'black'], ['antique white', '20', 'black'],
     ['AntiqueWhite1', '20', 'black'], ['AntiqueWhite2', '19', 'black'],
     ['AntiqueWhite3', '16', 'black'], ['AntiqueWhite4', '11', 'black'],
@@ -28,7 +28,7 @@ some_colours = [
     ['cornsilk2', '19', 'black'], ['cornsilk3', '16', 'black'],
 ]
 
-print("We have started with {} colours!".format(len(some_colours)))
+print("We have started with {} colours!".format(len(some_colors)))
 
 # loop three times (ie: generate three rounds worth of colours)
 for item in range(0, 3):
@@ -38,8 +38,8 @@ for item in range(0, 3):
     # Get six unique colours
     while len(round_colour_list) < 6:
         # choose item
-        chosen_colour = random.choice(some_colours)
-        index_chosen = some_colours.index(chosen_colour)
+        chosen_colour = random.choice(some_colors)
+        index_chosen = some_colors.index(chosen_colour)
 
         # check score is not already in list
         if chosen_colour[2] not in color_scores:
@@ -47,8 +47,8 @@ for item in range(0, 3):
             round_colour_list.append(chosen_colour)
 
             # remove item from master list
-            some_colours.pop(index_chosen)
+            some_colors.pop(index_chosen)
 
     print("Round Colours", round_colour_list)
-    print("Colour List Length: ", len(some_colours))
+    print("Colour List Length: ", len(some_colors))
     print()

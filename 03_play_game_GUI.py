@@ -5,7 +5,6 @@ import random
 
 import setuptools
 
-
 # users choose round 3, 5 or 10 rounds
 class ChooseRounds:
 
@@ -18,7 +17,6 @@ class ChooseRounds:
 
         # Hide root windows (ie: hide rounds choice windows).
         root.withdraw()
-
 
 class Play:
 
@@ -49,7 +47,7 @@ class Play:
         computer_scores = []
 
         # get all the colours for use in game
-        self.all_colours = self.all_colours()
+        self.all_colours = self.get_all_colours()
 
         self.quest_frame = Frame(self.play_box, padx=10, pady=10)
         self.quest_frame.grid()
@@ -69,8 +67,8 @@ class Play:
         self.instructions_label.grid(row=1)
 
         # get colours for button for first round ...
-        button_colours_list = self.get_round_colours()
-        print(button_colours_list) # for testing purposes only remove
+        button_colours_list = self.get_round_colors()
+        print(button_colours_list)  # for testing purposes only remove
 
         # create colours buttons (in choice_frame)
         self.choice_frame = Frame(self.quest_frame)
@@ -136,57 +134,64 @@ class Play:
                 self.make_control_button.grid(row=0, column=item, padx=5, pady=5)
 
         # retrieve colours from csv file
-        def get_all_colours(self):
-            file = open("00_colours_list_hex_v3.csv", "r")
-            var_all_colors = list(csv.reader(file, delimiter=","))
-            file.close()
+    def get_all_colours(self):
+        file = open("00_colours_list_hex_v3.csv", "r")
+        var_all_colors = list(csv.reader(file, delimiter=","))
+        file.close()
 
-            # removes first entry list (ie: the header row).
-            var_all_colors.pop(0)
-            return var_all_colors
+        # removes first entry list (ie: the header row).
+        var_all_colors.pop(0)
+        return var_all_colors
 
-        # randomly choose six colours for buttons
-        def get_round_colors(self):
-            round_colour_list = []
-            color_scores = []
+    # randomly choose six colours for buttons
+    def get_round_colors(self):
+        round_colour_list = []
+        color_scores = []
 
-            # get six unique colours
-            while len(round_colour_list) < 6:
-                # choose item
-                chosen_colour = random.choice(self.all_colours)
-                index_chosen = self.all_colours.index(chosen_colour)
+        # get six unique colours
+        while len(round_colour_list) < 6:
+            # choose item
+            chosen_colour = random.choice(self.all_colours)
+            index_chosen = self.all_colours.index(chosen_colour)
 
-                # check score is not already in list
-                if chosen_colour[1] not in color_scores:
-                    # add item rounds to list
-                    round_colour_list.append(chosen_colour)
-                    color_scores.append(chosen_colour[1])
+            # check score is not already in list
+            if chosen_colour[1] not in color_scores:
+                # add item rounds to list
+                round_colour_list.append(chosen_colour)
+                color_scores.append(chosen_colour[1])
 
-                    # renove item from master list
-                    self.all_colours.pop(index_chosen)
+                # renove item from master list
+                self.all_colours.pop(index_chosen)
 
-            return round_colour_list
+        return round_colour_list
 
-        def to_compare(self, user_score):
-            print("Your score is",user_score)
+    def to_compare(self, user_scores):
+        print("Your score is", user_scores)
 
-        # Detects which 'control' button was pressed and
-        # invoke necessary function. Can possibly replace functions
-        # with calls to classes in this section!
-        def to_do(self, action):
-            if action == "get help":
-                self.get_help()
-            elif action == "get stats":
-                self.get_stats()
-            else:
-                self.close_play()
+    # Detects which 'control' button was pressed and
+    # invoke necessary function. Can possibly replace functions
+    # with calls to classes in this section!
+    def to_do(self, action):
+        if action == "get help":
+            self.get_help()
+        elif action == "get stats":
+            self.get_stats()
+        else:
+            self.close_play()
 
-        def get_stats(self):
-            print("You chose to get the statistics")
+    def get_stats(self):
+        print("You chose to get the statistics")
 
-        def get_help(self):
-            print("You chose to get help")
+    def get_help(self):
+        print("You chose to get help")
 
-        # DON'T USE THIS FUNCTION IN BASE AS IT KILL THE ROOT
-        def close_play(self):
-            root.destroy()
+    # DON'T USE THIS FUNCTION IN BASE AS IT KILL THE ROOT
+    def close_play(self):
+        root.destroy()
+
+# main routine
+if __name__ == "__main__":
+    root = Tk()
+    root.title("Colour Quest")
+    ChooseRounds()
+    root.mainloop()
